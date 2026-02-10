@@ -1,5 +1,8 @@
 /* globals commonTests,THIRD_PARTY_ORIGIN,THIRD_PARTY_TRACKER_ORIGIN,THIRD_PARTY_AD_ORIGIN,cookieStore */
 
+const { searchParams } = new URL(window.location);
+const iframeLoadTimeoutMs = parseInt(searchParams.get('timeout'), 10) || 1000;
+
 const storeButton = document.querySelector('#store');
 const retriveButton = document.querySelector('#retrive');
 const downloadButton = document.querySelector('#download');
@@ -40,7 +43,7 @@ function create3pIframeTest (name, origin) {
 
             window.addEventListener('message', cleanUp);
             iframe.addEventListener('load', () => {
-                failTimeout = setTimeout(() => rej('timeout'), 1000);
+                failTimeout = setTimeout(() => rej('timeout'), iframeLoadTimeoutMs);
             });
 
             document.body.appendChild(iframe);
@@ -69,7 +72,7 @@ function create3pIframeTest (name, origin) {
 
             window.addEventListener('message', cleanUp);
             iframe.addEventListener('load', () => {
-                failTimeout = setTimeout(() => rej('timeout'), 1000);
+                failTimeout = setTimeout(() => rej('timeout'), iframeLoadTimeoutMs);
             });
 
             document.body.appendChild(iframe);
@@ -332,11 +335,11 @@ downloadButton.addEventListener('click', () => downloadTheResults());
 storeButton.addEventListener('click', () => storeData());
 retriveButton.addEventListener('click', () => retrieveData());
 
-// if url query is '?store' store the data immadiatelly
-if (document.location.search === '?store') {
+// If URL contains 'store' parameter, store the data immediately.
+if (searchParams.has('store')) {
     storeData();
 }
-// if url query is '?retrive' retrieve the data immadiatelly
-if (document.location.search === '?retrive') {
+// If URL contains 'retrive' parameter, retrieve the data immediately.
+if (searchParams.has('retrive')) {
     retrieveData();
 }
